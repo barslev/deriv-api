@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import { first }         from 'rxjs/operators';
 
 import DerivAPI          from '../../DerivAPI';
@@ -36,7 +37,7 @@ test('Request for balance', async () => {
 
     connection.receiveLater('balance', { balance: 4000, currency: 'USD' });
 
-    const new_balance = await balance.onUpdate().pipe(first()).toPromise();
+    const new_balance = await lastValueFrom(balance.onUpdate().pipe(first()));
 
     expect(new_balance.currency).toEqual(balance.currency);
     expect(new_balance.value).toEqual(4000);

@@ -1,6 +1,7 @@
+import { lastValueFrom } from 'rxjs';
 import { map, first } from 'rxjs/operators';
 
-import Monetary       from '../fields/Monetary'; /* eslint-disable-line no-unused-vars */
+import Monetary       from '../fields/Monetary';/* eslint-disable-line no-unused-vars */
 import Stream         from '../types/Stream';
 
 /**
@@ -38,7 +39,7 @@ export default class WebsiteStatus extends Stream {
             Object.assign(this._data, website_status);
         });
 
-        await website_status_stream.pipe(first()).toPromise();
+        await lastValueFrom(website_status_stream.pipe(first()));
     }
 
     get is_website_up() {

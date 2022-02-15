@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import { first }         from 'rxjs/operators';
 
 import { TestWebSocket } from '../../test_utils';
@@ -14,10 +15,9 @@ test('Request ticks for InvalidSymbol', async () => {
 test('Subscribe to ticks with Observables 1', async () => {
     const obj = { ticks: 'InvalidSymbolObservable1' };
     await expect(
-        api
+        lastValueFrom(api
             .subscribe(obj)
-            .pipe(first())
-            .toPromise(),
+            .pipe(first())),
     ).rejects;
 });
 

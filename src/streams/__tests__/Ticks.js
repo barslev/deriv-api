@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import { first }         from 'rxjs/operators';
 
 import DerivAPI          from '../../DerivAPI';
@@ -34,7 +35,7 @@ test('list stays up to date with the last tick', async () => {
         ask   : 1587.35, bid   : 1586.95, epoch : 1564977006, id    : '5fcb61fe-af4e-d2ba-d8df-64f9f2dd8868', quote : 1587.15, symbol: 'R_100',
     });
 
-    const recent_tick = await ticks.onUpdate().pipe(first()).toPromise();
+    const recent_tick = await lastValueFrom(ticks.onUpdate().pipe(first()));
 
     // Tick was pushed to the end of the list
     expect(ticks.list.slice(-2)[0]).toEqual(last_tick);

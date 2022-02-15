@@ -1,9 +1,9 @@
+import { lastValueFrom, Observable } from 'rxjs';
 import {
     take,
     toArray,
     first,
 }                        from 'rxjs/operators';
-import { Observable }    from 'rxjs';
 
 import { TestWebSocket } from '../../test_utils';
 
@@ -20,7 +20,7 @@ test('Subscribe by calling api.subscribeWithCallback and callback', async () => 
     );
     source.subscribe(mock_fn);
 
-    const response = await source.pipe(first()).toPromise();
+    const response = await lastValueFrom(source.pipe(first()));
 
     expect(response.msg_type).toBe('website_status');
 
@@ -41,12 +41,10 @@ test('Subscribe with api.subscribe should return an Observable', async () => {
         ask   : 1600.29, bid   : 1599.89, epoch : 1564978428, id    : 'b7ba02da-353e-2189-d6f3-3d8907ad7109', quote : 1600.09, symbol: 'R_100',
     });
 
-    const two_responses = await source
+    const two_responses = await lastValueFrom(source
         .pipe(
             take(2),
-            toArray(),
-        )
-        .toPromise();
+            toArray()));
 
     expect(mock_fn).toHaveBeenCalledTimes(2);
 

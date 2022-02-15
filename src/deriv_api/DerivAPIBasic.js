@@ -1,10 +1,10 @@
+import { lastValueFrom, Subject } from 'rxjs';
+
 import {
     first,
     filter,
     share,
 } from 'rxjs/operators';
-
-import { Subject }         from 'rxjs';
 
 import Cache               from './Cache';
 import CustomPromise       from './CustomPromise';
@@ -159,7 +159,7 @@ export default class DerivAPIBasic extends DerivAPICalls {
 
         this.deleteFromExpectResponse(request);
 
-        const response_promise = this.sendAndGetSource(request).pipe(first()).toPromise();
+        const response_promise = lastValueFrom(this.sendAndGetSource(request).pipe(first()));
 
         response_promise.then((response) => {
             this.cache.set(request, response);
