@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import {
     first, finalize, share,
 } from 'rxjs/operators';
@@ -100,7 +101,7 @@ export default class SubscriptionManager {
 
         this.saveSubsPerMsgType(request, key);
 
-        source.pipe(first()).toPromise()
+        lastValueFrom(source.pipe(first()))
             .then((response) => {
                 if (request.buy) {
                     this.buy_key_to_contract_id[key] = {

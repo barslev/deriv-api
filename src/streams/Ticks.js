@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import {
     map, first, skip, share,
 }                      from 'rxjs/operators';
@@ -51,9 +52,8 @@ export default class Ticks extends Stream {
             this._data.list = [...this._data.list.slice(1), tick];
         });
 
-        this._data.list = await ticks
-            .pipe(first(), map(h => historyToTicks(h, this._data.pip)))
-            .toPromise();
+        this._data.list = await lastValueFrom(ticks
+            .pipe(first(), map(h => historyToTicks(h, this._data.pip))));
     }
 
 

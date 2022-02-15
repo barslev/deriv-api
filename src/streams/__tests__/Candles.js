@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import { first }         from 'rxjs/operators';
 
 import DerivAPI          from '../../DerivAPI';
@@ -37,7 +38,7 @@ test('list stays up to date with the last candle', async () => {
     connection.receiveLater('ohlc', {
         close      : '1595.00', epoch      : 1564977284, granularity: 60, high       : '1595.28', id         : '28ab4e47-bc20-ee92-572f-1d8dd07fa283', low        : '1591.06', open       : '1591.56', open_time  : 1564977240, symbol     : 'R_100',
     });
-    const recent_candle = await candle_stream.onUpdate().pipe(first()).toPromise();
+    const recent_candle = await lastValueFrom(candle_stream.onUpdate().pipe(first()));
 
     // Candle was pushed to the end of the list
     expect(candle_stream.list.slice(-2)[0]).toEqual(last_candle);

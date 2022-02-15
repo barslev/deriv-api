@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import { first }         from 'rxjs/operators';
 
 import DerivAPI          from '../../DerivAPI';
@@ -31,7 +32,7 @@ test('Request for transactions', async () => {
 
     connection.receiveLater('transaction', { action: 'sell', ...tx_template });
 
-    const last_transaction = await transactions.onUpdate().pipe(first()).toPromise();
+    const last_transaction = await lastValueFrom(transactions.onUpdate().pipe(first()));
 
     expect(last_transaction).toBeInstanceOf(Transaction);
     expect(transactions.list.slice(-2)[0]).toEqual(current_transaction);

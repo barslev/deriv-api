@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import {
     map, first, skip, share,
 }                       from 'rxjs/operators';
@@ -46,9 +47,8 @@ export default class Candles extends Stream {
             this._data.list = [...this._data.list.slice(1), candle];
         });
 
-        this._data.list = await candle_stream
-            .pipe(first(), map(h => historyToCandles(h, this._data.pip)))
-            .toPromise();
+        this._data.list = await lastValueFrom(candle_stream
+            .pipe(first(), map(h => historyToCandles(h, this._data.pip))));
     }
 
 

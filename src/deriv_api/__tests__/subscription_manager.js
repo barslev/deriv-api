@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import {
     first,
 }                        from 'rxjs/operators';
@@ -12,13 +13,13 @@ let connection;
 test('Subscription is reused for the same params', async () => {
     const source = api.subscribe({ ticks: 'R_100' });
 
-    const first_response = await source.pipe(first()).toPromise();
+    const first_response = await lastValueFrom(source.pipe(first()));
 
     const source2 = api.subscribe({ ticks: 'R_100' });
 
     connection.receiveLater('ticks', {});
 
-    const second_response = await source2.pipe(first()).toPromise();
+    const second_response = await lastValueFrom(source2.pipe(first()));
 
     expect(second_response.subscription.id).toBe(first_response.subscription.id);
 
@@ -30,11 +31,11 @@ test('Subscription is reused for the same params', async () => {
 test('Subscription is not reused for different params', async () => {
     const source = api.subscribe({ ticks: 'R_100' });
 
-    const first_response = await source.pipe(first()).toPromise();
+    const first_response = await lastValueFrom(source.pipe(first()));
 
     const source2 = api.subscribe({ ticks: 'R_25' });
 
-    const second_response = await source2.pipe(first()).toPromise();
+    const second_response = await lastValueFrom(source2.pipe(first()));
 
     expect(second_response.subscription.id).not.toBe(first_response.subscription.id);
 
@@ -46,13 +47,13 @@ test('Subscription is not reused for different params', async () => {
 test('Subscribe then forget then subscribe again', async () => {
     const source = api.subscribe({ ticks: 'R_100' });
 
-    const first_response = await source.pipe(first()).toPromise();
+    const first_response = await lastValueFrom(source.pipe(first()));
 
     await api.forget(first_response.subscription.id);
 
     const source2 = api.subscribe({ ticks: 'R_100' });
 
-    const second_response = await source2.pipe(first()).toPromise();
+    const second_response = await lastValueFrom(source2.pipe(first()));
 
     expect(second_response.subscription.id).not.toBe(first_response.subscription.id);
 
@@ -62,7 +63,7 @@ test('Subscribe then forget then subscribe again', async () => {
 test('Forget all will remove the subscription for the types', async () => {
     const source = api.subscribe({ ticks: 'R_100' });
 
-    await source.pipe(first()).toPromise();
+    await lastValueFrom(source.pipe(first()));
     await api.forgetAll('ticks');
 
     const source2 = api.subscribe({ ticks: 'R_100' });
@@ -116,7 +117,7 @@ describe('Check sources', () => {
 test('Subscribe to buy adds a source for poc', async () => {
     const source = api.subscribe({ buy: 1 });
 
-    const { buy: { contract_id } } = await source.pipe(first()).toPromise();
+    const { buy: { contract_id } } = await lastValueFrom(source.pipe(first()));
 
     const source2 = api.subscribe({ proposal_open_contract: 1, contract_id });
 

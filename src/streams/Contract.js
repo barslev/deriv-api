@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import { first, map }   from 'rxjs/operators';
 
 import CustomDate       from '../fields/CustomDate';
@@ -129,7 +130,7 @@ export default class Contract extends Stream {
             Object.assign(this._data, contract);
         });
 
-        await this.beforeUpdate().pipe(first()).toPromise();
+        await lastValueFrom(this.beforeUpdate().pipe(first()));
     }
 
     /**

@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import { first, map, share } from 'rxjs/operators';
 
 import Monetary              from '../fields/Monetary';
@@ -33,7 +34,7 @@ export default class Balance extends Stream {
         const source = this.api.basic.subscribe({ balance: 1 })
             .pipe(map(b => wrapBalance(b, this.api.basic.lang)), share());
 
-        this._data.amount = await source.pipe(first()).toPromise();
+        this._data.amount = await lastValueFrom(source.pipe(first()));
 
         this.addSource(source);
 

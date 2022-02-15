@@ -1,3 +1,4 @@
+const { lastValueFrom } = require('rxjs');
 global.WebSocket = require('ws');
 const { find } = require('rxjs/operators');
 const DerivAPI = require('../dist/DerivAPI');
@@ -49,14 +50,14 @@ async function main() {
         });
 
         // Wait until payout is greater than USD 19
-        await contract.onUpdate().pipe(find(({ payout }) => payout.value >= expected_payout)).toPromise();
+        await lastValueFrom(contract.onUpdate().pipe(find(({ payout }) => payout.value >= expected_payout)));
 
         const buy = await contract.buy();
 
         console.log(`Buy price is: ${buy.price.currency} ${buy.price.display}`);
 
         // Wait until the contract is sold
-        await contract.onUpdate().pipe(find(({ is_sold }) => is_sold)).toPromise();
+        await lastValueFrom(contract.onUpdate().pipe(find(({ is_sold }) => is_sold)));
 
         const { profit, status } = contract;
 
